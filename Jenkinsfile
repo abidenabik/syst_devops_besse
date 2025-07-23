@@ -4,50 +4,50 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.8.1'   // Nom configuré dans Jenkins > Manage Jenkins > Global Tool Configuration
-    }
+  
 
     stages {
         stage('Checkout') {
             steps {
-                echo '🔄 Clonage du dépôt...'
+                echo '🔄 Checking out...'
                 git url: 'https://github.com/abidenabik/syst_devops_besse.git', branch: 'sys_devops'
             }
         }
 
         stage('Build') {
             steps {
-                echo '🔧 Building project...'
+                echo ' Building project...'
                 sh 'mvn clean install -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                echo '🧪 Running automated tests...'
+                echo ' Running automated tests...'
                 sh 'mvn test'
             }
-
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
+            }
+        
+        stage('INtegraed Test') {
+            steps {
+                echo ' Building project...'
+                sh 'mvn verify'
             }
         }
+        
 
-         stage('Deploy') {
+        stage('Deploy') {
             steps {
-                echo '🚀 Déploiement Docker...'
-                sh 'docker build -t abidenabik/syst_devops_besse .'
-                sh 'docker run -d -p 8080:8080 abidenabik/syst_devops_besse'
+                echo '🚀 Deploying app...'
+                sh 'docker build -t simple-api .'
+                sh 'docker run -d  simple-api'
             }
         }
     }
 
     post {
         always {
-            echo '📌 Pipeline finished.'
+            junit '**/target/surefire-reports/*.xml'
         }
         success {
             echo '✅ All stages passed.'
@@ -56,4 +56,5 @@ pipeline {
             echo '❌ A stage failed.'
         }
     }
+
 }
