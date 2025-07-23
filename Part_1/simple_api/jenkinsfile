@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven 3.8.1'   // Nom configuré dans Jenkins > Manage Jenkins > Global Tool Configuration
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -11,21 +15,27 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo '🔧 Building...'
-                sh 'mvn clean install'
+                echo '🔧 Building project...'
+                sh 'mvn clean install -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                echo '🧪 Testing...'
+                echo '🧪 Running automated tests...'
                 sh 'mvn test'
+            }
+
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo '🚀 Deploying...'
+                echo '🚀 Deploying app...'
                 sh 'docker build -t simple-api .'
                 sh 'docker run -d -p 8080:8080 simple-api'
             }
@@ -34,13 +44,13 @@ pipeline {
 
     post {
         always {
-            echo '✅ This will always run after the stages.'
+            echo '📌 Pipeline finished.'
         }
         success {
-            echo '🎉 Pipeline succeeded.'
+            echo '✅ All stages passed.'
         }
         failure {
-            echo '❌ Pipeline failed.'
+            echo '❌ A stage failed.'
         }
     }
 }
