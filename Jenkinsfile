@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo '🔄 Checking out...'
+                echo ' Checking out...'
                 git url: 'https://github.com/abidenabik/syst_devops_besse.git', branch: 'sys_devops'
             }
         }
@@ -38,7 +38,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo '🚀 Deploying app...'
+                echo ' Deploying app...'
                 sh 'docker build -t simple-api .'
                 sh 'docker run -d  simple-api'
             }
@@ -50,10 +50,10 @@ pipeline {
             junit '**/target/surefire-reports/*.xml'
         }
         success {
-            echo '✅ All stages passed.'
+            echo ' All stages passed ✅.'
         }
         failure {
-            echo '❌ A stage failed.'
+            echo '  stage failed ❌'
         }
     }
 
