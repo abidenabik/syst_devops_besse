@@ -50,7 +50,7 @@ def get_student_age(student_name):
       with open(student_age_file_path, 'w') as student_age_file:
         json.dump(student_age, student_age_file, indent=4, ensure_ascii=False)
     return age 
-@app.errorhandler(404)
+# @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 

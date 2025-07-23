@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out...'
+                git url: 'git@github.com:abidenabik/syst_devops_besse.git', branch: 'sys_devops'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh'mvn clean install'
+s            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'mvn test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'docker build - t simple-api .'
+                sh 'docker run -d -p 8080:8080 simple-api'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'This will always run after the stages.'
+        }
+        success {
+            echo 'This will run only if the pipeline succeeds.'
+        }
+        failure {
+            echo 'This will run only if the pipeline fails.'
+        }
+    }
+}
