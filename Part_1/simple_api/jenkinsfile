@@ -26,6 +26,7 @@ s            }
                 echo 'Deploying...'
                 sh 'docker build - t simple-api .'
                 sh 'docker run -d -p 8080:8080 simple-api'
+                sh'mise en place d'un pipeline CI/CD avec jenkins'
             }
         }
     }
